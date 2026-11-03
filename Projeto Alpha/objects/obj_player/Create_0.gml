@@ -3,3 +3,5 @@ vspd=0
 spd=3
 grav=0.75
 jumpspd=-12
+facing=1
+attacking= false
