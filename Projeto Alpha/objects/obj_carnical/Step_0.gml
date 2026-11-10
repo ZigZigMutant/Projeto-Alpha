@@ -1,4 +1,4 @@
-// --- 1. APLICAR GRAVIDADE ---
+  // --- 1. APLICAR GRAVIDADE ---
 vspd += grav;
 
 // --- 2. DETECÇÃO E TRANSIÇÃO DE ESTADOS ---
@@ -145,3 +145,5 @@ if (place_meeting(x, y + vspd, obj_chao))
     vspd = 0;
 }
 y += vspd;
+
+ 

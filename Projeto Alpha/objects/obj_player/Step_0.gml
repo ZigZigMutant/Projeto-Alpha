@@ -1,4 +1,4 @@
-//MOVIMENTO E COLISÃO
+ //MOVIMENTO E COLISÃO
 move = -keyboard_check(vk_left) + keyboard_check(vk_right)
 
 hspd = move * spd
@@ -52,8 +52,8 @@ if (attack_melee && !attacking)
     image_speed = 1
     
 //Cria uma Hitbox
-    var _offset_x = 32 * image_xscale 
-    var _inst = instance_create_layer(x + _offset_x, y, layer, obj_player_hitbox)
+    var _offset_x = 1 * image_xscale 
+    var _inst = instance_create_layer(x + _offset_x, y, layer, obj_sword )
     _inst.image_xscale = image_xscale
 }
 
@@ -94,6 +94,7 @@ else
         sprite_index = spr_player;
     }
 }
+
 
 // --- LÓGICA DE DANO POR COLISÃO COM INIMIGO ---
 

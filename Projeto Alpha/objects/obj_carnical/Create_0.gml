@@ -11,7 +11,7 @@ estado = "patrulha";      // Estados: "patrulha", "perseguindo", "atacando", "da
 
 // --- DISTÂNCIAS E GATILHOS ---
 raio_visao = 220;         // Distância em pixels para o inimigo notar o player
-raio_ataque = 45;         // Distância para desferir o golpe
+raio_ataque = 1;         // Distância para desferir o golpe
 cooldown_ataque = 0;      // Tempo de espera entre os ataques
 qual_ataque = 1;          // Alterna entre o ataque 1 e o ataque 2
 

@@ -1,0 +1,1 @@
+tempo_vida = 15
