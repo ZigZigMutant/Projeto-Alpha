@@ -1,85 +1,87 @@
 //MOVIMENTO E COLISÃO
-move = -keyboard_check(vk_left) + keyboard_check(vk_right);
+move = -keyboard_check(vk_left) + keyboard_check(vk_right)
 
-hspd = move * spd;
+hspd = move * spd
 
 
-if place_meeting(x+hspd, y, obj_chao)
+if place_meeting(x+hspd, y, obj_chao) //Colisão Horizontal
 {
 	while !place_meeting(x+sign(hspd), y, obj_chao)
 	{
-		x += sign(hspd);
+		x += sign(hspd)
 	}
-	hspd = 0;
+	hspd = 0
 }
 
-x += hspd;
+x += hspd
 
-if place_meeting(x, y+vspd, obj_chao)
+if place_meeting(x, y+vspd, obj_chao)// Colisão Vertical
 {
 	while !place_meeting(x, y+sign(vspd), obj_chao)
 	{
-		y += sign(vspd);
+		y += sign(vspd)
 	}
 	vspd = 0;
 }
 
-y += vspd;
+y += vspd
 
-if place_meeting(x, y+1, obj_chao)
+if place_meeting(x, y+1, obj_chao) // Pulo
 {
 	if keyboard_check_pressed(vk_up)
 	{
-		vspd = jumpspd;
+		vspd = jumpspd
 	}
 }
 else
 {
-	vspd += grav;
+	vspd += grav
 }
 
-attack_melee = keyboard_check_pressed(ord("X")); // Tecla X para espada
-attack_shoot = keyboard_check_pressed(ord("C")); // Tecla C para tiro
+//ATAQUE E TIRO
 
-// 1. Inicia o Ataque Corpo a Corpo (X)
+attack_melee = keyboard_check_pressed(ord("X")) // Tecla X para espada
+attack_shoot = keyboard_check_pressed(ord("C")) // Tecla C para tiro
+
+//Ataque Corpo a Corpo
 if (attack_melee && !attacking) 
 {
-    attacking = true;
-    sprite_index = spr_attack_player; 
-    image_index = 0; 
-    image_speed = 1; 
+    attacking = true
+    sprite_index = spr_attack_player
+    image_index = 0
+    image_speed = 1
     
-    var _offset_x = 32 * image_xscale; 
-    var _inst = instance_create_layer(x + _offset_x, y, layer, obj_player_hitbox);
-    _inst.image_xscale = image_xscale; 
+//Cria uma Hitbox
+    var _offset_x = 32 * image_xscale 
+    var _inst = instance_create_layer(x + _offset_x, y, layer, obj_player_hitbox)
+    _inst.image_xscale = image_xscale
 }
 
-// 2. Inicia o Ataque de Tiro (C)
+//Ataque de Tiro
 if (attack_shoot && !attacking) 
 {
-    attacking = true;
-    sprite_index = spr_shoot_player; // Sprite do personagem atirando
-    image_index = 0; 
-    image_speed = 1; 
+    attacking = true
+    sprite_index = spr_shoot_player
+    image_index = 0
+    image_speed = 1
     
-    // Define a posição onde a bala sai (ex: na ponta da arma/na frente do player)
+    // Define a posição onde a bala sai 
     var _offset_x = 24 * image_xscale; 
-    var _projetil = instance_create_layer(x + _offset_x, y, layer, obj_projetil);
+    var _projetil = instance_create_layer(x + _offset_x, y, layer, obj_projetil)
     
-    // Passa a direção para o projétil ir para o lado certo
-    _projetil.direcao = image_xscale; 
+    _projetil.way = image_xscale; 
 }
 
-// 3. Comportamento ENQUANTO estiver atacando (qualquer um dos dois)
+//Comportamento ENQUANTO estiver atacando
 if (attacking) 
 {
-    // Quando a animação do ataque/tiro chegar ao fim, o jogador destrava
+  
     if (image_index >= image_number - 1) 
     {
         attacking = false; 
     }
 }
-// 4. Comportamento normal (se NÃO estiver atacando)
+//Comportamento normal 
 else 
 {
     if (move != 0) 
@@ -91,4 +93,35 @@ else
     {
         sprite_index = spr_player;
     }
+}
+
+// --- LÓGICA DE DANO POR COLISÃO COM INIMIGO ---
+
+// Se não estiver invulnerável e encostar no inimigo
+if (!invulnerable && place_meeting(x, y, obj_carnical)) 
+{
+    hp -= 20            
+    invulnerable = true
+    time_invulnerable = room_speed * 1 // Fica 1 segundo invulnerável (piscos)
+    
+    // Opcional: Empurrão (Knockback) ao tomar dano
+    vspd = -4
+}
+
+// Controla o tempo de invulnerabilidade
+if (invulnerable) 
+{
+    time_invulnerable -= 1;
+    if (time_invulnerable <= 0) 
+    {
+        invulnerable = false;
+    }
+}
+
+// --- VERIFICAÇÃO DE MORTE ---
+if (hp <= 0) 
+{
+    // O que acontece quando o player morre
+    // Exemplo: Reiniciar a fase ou destruir o objeto
+    room_restart(); 
 }
