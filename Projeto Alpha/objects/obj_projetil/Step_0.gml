@@ -5,7 +5,7 @@ x += vshoot * way;
 image_xscale = way;
 
 // 3. Destrói o tiro se ele bater em uma parede (obj_chao)
-if (place_meeting(x, y, obj_chao)) 
+if (place_meeting(x , y, obj_chao)) 
 {
     instance_destroy();
 }

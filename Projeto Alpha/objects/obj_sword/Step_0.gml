@@ -1,8 +1,13 @@
-// No Evento Step da hitbox
-tempo_vida -= 1;
+// Acompanha o dono enquanto ele existir
+if (instance_exists(owner))
+{
+    x = owner.x + offset_x;
+    y = owner.y;
+}
 
-// Se o tempo acabar, a hitbox se destrói sozinha
-if (tempo_vida <= 0) 
+// Quando o tempo acabar, a hitbox se destrói sozinha
+lifetime -= 1;
+if (lifetime <= 0)
 {
     instance_destroy();
 }

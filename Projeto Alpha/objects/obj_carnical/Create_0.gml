@@ -1,3 +1,5 @@
+event_inherited(); // Executa primeiro o Create do obj_enemy_parent
+
 // --- FÍSICA E MOVIMENTO ---
 spd = 1;                  // Velocidade de perseguição
 hspd = 0;
@@ -5,15 +7,15 @@ vspd = 0;
 grav = 0.3;
 
 // --- VIDA E ESTADOS ---
-hp = 30;                  // Vida total do inimigo
+hp = 30;
 hp_max = 30;
-estado = "patrulha";      // Estados: "patrulha", "perseguindo", "atacando", "dano", "morto"
+state = "patrol";         // Estados: "patrol", "chase", "attack", "hurt", "dead"
 
 // --- DISTÂNCIAS E GATILHOS ---
-raio_visao = 220;         // Distância em pixels para o inimigo notar o player
-raio_ataque = 1;         // Distância para desferir o golpe
-cooldown_ataque = 0;      // Tempo de espera entre os ataques
-qual_ataque = 1;          // Alterna entre o ataque 1 e o ataque 2
+sight_radius = 220;       // Distância em pixels para o inimigo notar o jogador
+attack_radius = 1;        // Distância para desferir o golpe
+attack_cooldown = 0;      // Tempo de espera entre os ataques
+attack_index = 1;         // Alterna entre o ataque 1 e o ataque 2
 
-// --- TEMPO DE STUN / DANO ---
-tempo_dano = 0;
+// --- COMBATE ---
+damage = 20;              // Dano causado ao jogador por contato
