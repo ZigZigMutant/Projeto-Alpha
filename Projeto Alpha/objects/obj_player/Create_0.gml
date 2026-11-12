@@ -58,9 +58,6 @@ take_damage = function(_amount, _source_x)
     knockback_x = _direction * 6; 
     vspd = -2;         
 }
-// Tomar dano e ativar a logica da linha anterior
-var _enemy = instance_place(x, y, obj_enemy_parent);
-if (_enemy != noone)
-{
-    take_damage(_enemy.damage);
-}
+
+// Cria a interface (HUD) caso ainda não exista na sala
+if (!instance_exists(obj_hud)) instance_create_depth(0, 0, -100, obj_hud);
