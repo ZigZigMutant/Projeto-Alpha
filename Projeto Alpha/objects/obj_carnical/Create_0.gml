@@ -1,21 +1,25 @@
-event_inherited(); // Executa primeiro o Create do obj_enemy_parent
 
-// --- FÍSICA E MOVIMENTO ---
-spd = 1;                  // Velocidade de perseguição
-hspd = 0;
-vspd = 0;
-grav = 0.3;
+// O comportamento vem do obj_enemy_parent.
 
-// --- VIDA E ESTADOS ---
-hp = 30;
+event_inherited();
+
+// --- Vida ---
 hp_max = 30;
-state = "patrol";         // Estados: "patrol", "chase", "attack", "hurt", "dead"
+hp = hp_max;
 
-// --- DISTÂNCIAS E GATILHOS ---
-sight_radius = 220;       // Distância em pixels para o inimigo notar o jogador
-attack_radius = 1;        // Distância para desferir o golpe
-attack_cooldown = 0;      // Tempo de espera entre os ataques
-attack_index = 1;         // Alterna entre o ataque 1 e o ataque 2
+// --- Combate ---
+damage = 20;                  // Dano por contato no jogador
 
-// --- COMBATE ---
-damage = 20;              // Dano causado ao jogador por contato
+// --- Movimento ---
+spd = 1;                      // Velocidade de patrulha e perseguição
+
+// --- Percepção e ataque ---
+sight_radius = 220;
+attack_radius = 1;
+attack_cooldown_duration = 50;
+
+// --- Sprites ---
+sprite_walk = spr_walk_carnical;
+sprite_attack = spr_attack_carnical;
+sprite_hurt = spr_hurt_carnical;
+sprite_death = spr_death_carnical;

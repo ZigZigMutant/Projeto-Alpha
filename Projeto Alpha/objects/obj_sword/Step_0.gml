@@ -1,9 +1,13 @@
-// Acompanha o dono enquanto ele existir
-if (instance_exists(owner))
+// Sem dono, não existe golpe
+if (!instance_exists(owner))
 {
-    x = owner.x + offset_x;
-    y = owner.y + offset_y;
+    instance_destroy();
+    exit;
 }
+
+// Acompanha o dono
+x = owner.x + offset_x;
+y = owner.y + offset_y;
 
 // Quando o tempo acabar, a hitbox se destrói sozinha
 lifetime -= 1;

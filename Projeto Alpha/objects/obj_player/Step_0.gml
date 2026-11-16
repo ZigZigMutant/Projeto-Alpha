@@ -1,3 +1,9 @@
+// ============================================================
+// obj_player | Step
+// ============================================================
+
+input = input_get();
+
 // O que fazer depende do estado atual
 switch (state)
 {
@@ -18,15 +24,23 @@ switch (state)
     case PlayerState.DASH:
         update_dash_state();
         break;
+
+    case PlayerState.HURT:
+        update_hurt_state();
+        break;
+
+    case PlayerState.DEAD:
+        update_dead_state();
+        break;
 }
 
 update_dash_cooldown();
-handle_contact_damage();
 update_invulnerability();
+handle_contact_damage();
 check_death();
 
-// --- ATALHO DE DEBUG: reinicia a sala ---
-if (keyboard_check_pressed(ord("R")))
+// --- ATALHO DE DEBUG: só existe ao rodar pela IDE, não no executável final ---
+if (GM_build_type == "run" && keyboard_check_pressed(ord("R")))
 {
     room_restart();
 }

@@ -1,5 +1,6 @@
-// 'other' é o inimigo atingido. Se o golpe valeu, a hitbox se destrói
-if (other.take_hit(10))
+// 'other' é o inimigo atingido. Se o golpe valeu, a hitbox se destrói.
+// Passamos o x da espada para o inimigo saber de que lado veio o empurrão.
+if (other.take_hit(damage, x))
 {
     // Avisa o dono da espada que acertou (é isso que ativa o pogo)
     if (instance_exists(owner))
