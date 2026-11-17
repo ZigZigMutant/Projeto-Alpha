@@ -3,7 +3,9 @@ enum PlayerState
 {
     FREE,
     ATTACKING,
-    DASH
+    DASH,
+	HURT,
+	DEAD
 }
 
 // Direções possíveis do golpe de espada
