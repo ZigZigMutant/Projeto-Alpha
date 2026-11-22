@@ -1,6 +1,8 @@
-//Único lugar do projeto que lê teclado
 // ============================================================
-// Se quiserem trocar as teclas ou adicionar controle (gamepad),só este arquivo muda.
+// scr_input | Único lugar do projeto que lê teclado
+// ============================================================
+// Se quiserem trocar as teclas ou adicionar controle (gamepad),
+// só este arquivo muda. O resto do jogo usa o struct retornado.
 
 /// @returns {Struct} Estado dos controles neste frame
 function input_get()
@@ -13,5 +15,6 @@ function input_get()
         melee_pressed: keyboard_check_pressed(ord("K")),
         shoot_pressed: keyboard_check_pressed(ord("J")),
         dash_pressed:  keyboard_check_pressed(vk_shift),
+        heal_pressed:  keyboard_check_pressed(ord("L")),
     };
 }

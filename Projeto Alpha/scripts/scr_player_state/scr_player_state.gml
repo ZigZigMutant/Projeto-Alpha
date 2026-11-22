@@ -5,7 +5,8 @@ enum PlayerState
     ATTACKING,
     DASH,
 	HURT,
-	DEAD
+	DEAD,
+	HEAL
 }
 
 // Direções possíveis do golpe de espada

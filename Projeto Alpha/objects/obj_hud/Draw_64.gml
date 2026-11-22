@@ -24,7 +24,14 @@ if (_current_width > 0)
     draw_rectangle(_fill_x, _fill_y, _fill_x + _current_width - 1, _fill_y, false);
 }
 
+// Frascos de cura: cheio para cada carga, vazio para as gastas
+for (var i = 0; i < obj_player.potion_max; i++)
+{
+    var _sprite = (i < obj_player.potion_charges) ? spr_flask_full : spr_flask_empty;
+    draw_sprite(_sprite, 0, flask_x + i * flask_spacing, flask_y);
+}
 // Volta ao padrão para não afetar outros desenhos
+
 draw_set_color(c_white);
 
 // Moldura decorativa por cima de tudo

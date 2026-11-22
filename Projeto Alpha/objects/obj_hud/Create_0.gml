@@ -10,3 +10,7 @@ fill_offset_x = 12;
 fill_offset_y = 5;
 fill_width = 80;
 fill_height = 8;
+
+flask_x = 8;        // Posição do primeiro frasco
+flask_y = 26;       // Abaixo da moldura da vida (ajuste olhando a tela)
+flask_spacing = 14;

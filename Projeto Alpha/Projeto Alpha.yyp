@@ -11,6 +11,7 @@
   "defaultScriptType":1,
   "Folders":[
     {"$GMFolder":"","%Name":"Objects","folderPath":"folders/Objects.yy","name":"Objects","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Parents","folderPath":"folders/Objects/Parents.yy","name":"Parents","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Rooms","folderPath":"folders/Rooms.yy","name":"Rooms","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Sprites","folderPath":"folders/Sprites.yy","name":"Sprites","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Backgrounds","folderPath":"folders/Sprites/Backgrounds.yy","name":"Backgrounds","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -24,7 +25,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2026.0.0.16",
+    "IDEVersion":"2026.1.0.27",
   },
   "name":"Projeto Alpha",
   "resources":[
@@ -32,6 +33,7 @@
     {"id":{"name":"obj_chao","path":"objects/obj_chao/obj_chao.yy",},},
     {"id":{"name":"obj_enemy_parent","path":"objects/obj_enemy_parent/obj_enemy_parent.yy",},},
     {"id":{"name":"obj_esqueleto","path":"objects/obj_esqueleto/obj_esqueleto.yy",},},
+    {"id":{"name":"obj_heal_effect","path":"objects/obj_heal_effect/obj_heal_effect.yy",},},
     {"id":{"name":"obj_hud","path":"objects/obj_hud/obj_hud.yy",},},
     {"id":{"name":"obj_player","path":"objects/obj_player/obj_player.yy",},},
     {"id":{"name":"obj_projetil","path":"objects/obj_projetil/obj_projetil.yy",},},
@@ -44,6 +46,7 @@
     {"id":{"name":"scr_config","path":"scripts/scr_config/scr_config.yy",},},
     {"id":{"name":"scr_input","path":"scripts/scr_input/scr_input.yy",},},
     {"id":{"name":"scr_player_state","path":"scripts/scr_player_state/scr_player_state.yy",},},
+    {"id":{"name":"scr_potion","path":"scripts/scr_potion/scr_potion.yy",},},
     {"id":{"name":"bkg_catedral","path":"sprites/bkg_catedral/bkg_catedral.yy",},},
     {"id":{"name":"bkg_front_catedral","path":"sprites/bkg_front_catedral/bkg_front_catedral.yy",},},
     {"id":{"name":"spr_attack_carnical","path":"sprites/spr_attack_carnical/spr_attack_carnical.yy",},},
@@ -54,6 +57,10 @@
     {"id":{"name":"spr_chao","path":"sprites/spr_chao/spr_chao.yy",},},
     {"id":{"name":"spr_death_carnical","path":"sprites/spr_death_carnical/spr_death_carnical.yy",},},
     {"id":{"name":"spr_death_esqueleto","path":"sprites/spr_death_esqueleto/spr_death_esqueleto.yy",},},
+    {"id":{"name":"spr_drink_player","path":"sprites/spr_drink_player/spr_drink_player.yy",},},
+    {"id":{"name":"spr_flask_empty","path":"sprites/spr_flask_empty/spr_flask_empty.yy",},},
+    {"id":{"name":"spr_flask_full","path":"sprites/spr_flask_full/spr_flask_full.yy",},},
+    {"id":{"name":"spr_heal_effect","path":"sprites/spr_heal_effect/spr_heal_effect.yy",},},
     {"id":{"name":"spr_hp_frame","path":"sprites/spr_hp_frame/spr_hp_frame.yy",},},
     {"id":{"name":"spr_hurt_carnical","path":"sprites/spr_hurt_carnical/spr_hurt_carnical.yy",},},
     {"id":{"name":"spr_hurt_esqueleto","path":"sprites/spr_hurt_esqueleto/spr_hurt_esqueleto.yy",},},

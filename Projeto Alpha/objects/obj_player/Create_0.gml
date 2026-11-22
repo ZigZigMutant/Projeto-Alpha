@@ -1,3 +1,7 @@
+// ============================================================
+// obj_player | Create
+// ============================================================
+
 // --- Entrada (atualizada todo frame no Step) ---
 input = input_get();
 
@@ -44,6 +48,13 @@ sword_down_x = 0;
 sword_down_y = 22;
 pogo_speed = -9;             // Impulso ao acertar um inimigo com o golpe para baixo
 
+// --- Poção de cura ---
+potion_max = 2;              // Cargas máximas
+potion_charges = potion_max; // Cargas atuais
+potion_heal_amount = 40;     // Vida recuperada por carga
+potion_drink_duration = 50;  // Frames bebendo (levar dano cancela e a carga se perde)
+potion_timer = 0;
+
 // --- Dash ---
 dash_speed = 8;              // Pixels por frame (8 x 10 = 80 pixels de distância)
 dash_duration = 10;          // Frames
@@ -52,7 +63,10 @@ dash_timer = 0;
 dash_cooldown_timer = 0;
 dash_direction = 1;          // 1 = direita, -1 = esquerda
 
+
+// ============================================================
 // MOVIMENTO E COLISÃO
+// ============================================================
 
 is_on_ground = function()
 {
@@ -113,11 +127,14 @@ apply_collisions = function()
 }
 
 
-
+// ============================================================
 // ANIMAÇÃO
+// ============================================================
 
 update_free_animation = function()
 {
+    image_speed = 1; // Garante que a animação volte a rodar após beber (ou ser interrompido)
+
     if (move != 0)
     {
         sprite_index = spr_run_player;
@@ -129,7 +146,11 @@ update_free_animation = function()
     }
 }
 
+
+// ============================================================
 // ATAQUES
+// ============================================================
+
 // Entra no estado de ataque e toca a animação recebida
 start_attack = function(_sprite)
 {
@@ -237,7 +258,9 @@ update_attack_state = function()
 }
 
 
+// ============================================================
 // DASH
+// ============================================================
 
 handle_dash_input = function()
 {
@@ -286,7 +309,11 @@ update_dash_cooldown = function()
     }
 }
 
+
+// ============================================================
 // DANO, MORTE E INVENCIBILIDADE
+// ============================================================
+
 // Dano por contato com inimigo
 handle_contact_damage = function()
 {
@@ -369,6 +396,76 @@ update_dead_state = function()
     {
         room_restart();
     }
+}
+
+
+// ============================================================
+// POÇÃO DE CURA
+// ============================================================
+
+// Só bebe parado no chão, com carga e sem a vida cheia (evita desperdício)
+can_drink_potion = function()
+{
+    return state == PlayerState.FREE
+        && is_on_ground()
+        && potion_charges > 0
+        && hp < hp_max;
+}
+
+handle_potion_input = function()
+{
+    if (input.heal_pressed && can_drink_potion())
+    {
+        start_drinking();
+    }
+}
+
+// A carga é gasta ao começar; a cura só entra se a animação terminar
+start_drinking = function()
+{
+    state = PlayerState.HEAL;
+    potion_charges -= 1;
+    potion_timer = potion_drink_duration;
+    hspd = 0;
+    sprite_index = spr_drink_player;
+    image_index = 0;
+    image_speed = 0; // A animação acompanha o tempo restante (ver update_heal_state)
+}
+
+// Parado e vulnerável: se levar dano, take_damage muda o estado e a cura se perde
+update_heal_state = function()
+{
+    hspd = 0;
+    apply_gravity();
+    apply_collisions();
+
+    potion_timer -= 1;
+
+    // A animação acompanha o tempo restante, qualquer que seja a duração
+    var _progress = 1 - potion_timer / potion_drink_duration;
+    image_index = min(_progress * image_number, image_number - 0.01);
+
+    if (potion_timer <= 0)
+    {
+        finish_drinking();
+    }
+}
+
+// Aplica a cura, devolve o controle e dispara o efeito vermelho
+finish_drinking = function()
+{
+    hp = min(hp + potion_heal_amount, hp_max);
+    state = PlayerState.FREE;
+    image_speed = 1;
+
+    var _effect = instance_create_depth(x, y, depth - 1, obj_heal_effect);
+    _effect.owner = id;
+}
+
+// Chamada pelo altar ao meditar
+restore_potions = function()
+{
+    potion_charges = potion_max;
 }
 
 
