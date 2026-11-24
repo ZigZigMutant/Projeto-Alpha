@@ -1,4 +1,4 @@
-// Todo inimigo herda daqui. No Create do filho, chame event_inherited()
+ // Todo inimigo herda daqui. No Create do filho, chame event_inherited()
 
 // --- Vida e estado ---
 hp_max = 1;
@@ -226,8 +226,7 @@ update_hurt = function()
         knockback_x = 0;
         state = EnemyState.CHASE; // update_perception corrige no próximo frame
     }
-}
-
+}  
 // Some quando o último frame da animação de morte termina
 update_dead = function()
 {

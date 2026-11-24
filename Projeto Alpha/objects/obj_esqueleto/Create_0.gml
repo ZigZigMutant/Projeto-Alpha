@@ -1,4 +1,4 @@
-event_inherited();
+          event_inherited();
 
 // --- Vida e combate ---
 hp_max = 45;

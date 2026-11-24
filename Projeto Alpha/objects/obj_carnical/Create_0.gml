@@ -1,4 +1,4 @@
-// O comportamento vem do obj_enemy_parent.
+ // O comportamento vem do obj_enemy_parent.
 
 event_inherited();
 

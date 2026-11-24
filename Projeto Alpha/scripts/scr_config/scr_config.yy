@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"scr_config",
   "parent":{
-    "name":"Projeto Alpha",
-    "path":"Projeto Alpha.yyp",
+    "name":"Scripts",
+    "path":"folders/Scripts.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",
