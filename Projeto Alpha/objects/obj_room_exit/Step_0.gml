@@ -1,4 +1,4 @@
-// Porta sem destino configurado não faz nada
+ // Porta sem destino configurado não faz nada
 if (target_room == noone) exit;
 
 if (place_meeting(x, y, obj_player))

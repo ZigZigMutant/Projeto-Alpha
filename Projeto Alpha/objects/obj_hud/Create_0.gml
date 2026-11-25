@@ -1,4 +1,4 @@
-// Ajusta a área de desenho da interface ao tamanho da câmera (500x290)
+ // Ajusta a área de desenho da interface ao tamanho da câmera (500x290)
 display_set_gui_size(500, 290);
 
 // Posição da moldura na tela
@@ -18,5 +18,7 @@ flask_spacing = 14;
 // ============================================================
 // obj_hud | CREATE  (acrescente ao final do Create existente)
 // ============================================================
-mana_bar_w = 60;   // Largura da barra de mana
-mana_bar_h = 6;    // Altura da barra de mana
+mana_bar_w = 60;   // Largura da janela da moldura de mana
+mana_bar_h = 6;    // Altura da janela da moldura de mana
+mana_win_x = 10;   // Onde a janela começa dentro do spr_mana_frame
+mana_win_y = 5;

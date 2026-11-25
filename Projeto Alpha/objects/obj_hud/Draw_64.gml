@@ -35,11 +35,13 @@ for (var i = 0; i < obj_player.potion_max; i++)
 // obj_hud | DRAW  (cole ANTES do draw_set_color(c_white) final)
 // ============================================================
 // Usa flask_x, flask_y e flask_spacing, definidos para as poções:
-// a barra fica à direita dos frascos.
+// a moldura fica à direita dos frascos, na mesma linha.
 
 var _player = obj_player;
-var _mx = flask_x + _player.potion_max * flask_spacing + 4;
-var _my = flask_y + 5;
+var _fx = flask_x + _player.potion_max * flask_spacing + 2;   // Canto da moldura
+var _fy = flask_y;
+var _mx = _fx + mana_win_x;                                   // Canto da janela
+var _my = _fy + mana_win_y;
 var _mana_w = floor(mana_bar_w * clamp(_player.mana / _player.mana_max, 0, 1));
 
 // Cor da barra: pisca em vermelho se faltou mana, brilha ao ganhar mana
@@ -56,9 +58,7 @@ else if (_player.mana_gain_timer > 0)
     _shine = make_color_rgb(210, 235, 255);
 }
 
-// Contorno e fundo
-draw_set_color(make_color_rgb(14, 9, 12));
-draw_rectangle(_mx - 1, _my - 1, _mx + mana_bar_w, _my + mana_bar_h, false);
+// Fundo da janela
 draw_set_color(make_color_rgb(10, 16, 34));
 draw_rectangle(_mx, _my, _mx + mana_bar_w - 1, _my + mana_bar_h - 1, false);
 
@@ -71,13 +71,18 @@ if (_mana_w > 0)
     draw_rectangle(_mx, _my, _mx + _mana_w - 1, _my, false);
 }
 
-// Marcas: cada divisão equivale a um tiro
+// Marcas: cada divisão equivale a um tiro (alinhadas às marcas dos trilhos)
 draw_set_color(make_color_rgb(14, 9, 12));
 for (var i = 1; i < _player.mana_max / _player.shoot_cost; i++)
 {
     var _tx = _mx + floor(mana_bar_w * i * _player.shoot_cost / _player.mana_max);
     draw_line(_tx, _my, _tx, _my + mana_bar_h - 1);
 }
+
+// Moldura por cima de tudo (a janela dela é transparente)
+draw_set_color(c_white);
+draw_sprite(spr_mana_frame, 0, _fx, _fy);
+
 
 // Volta ao padrão para não afetar outros desenhos
 

@@ -1,4 +1,4 @@
- // ============================================================
+// ============================================================
 // obj_player | Create
 // ============================================================
 
@@ -40,7 +40,7 @@ hurt_duration = 15;          // Frames sem controle após o dano
 hurt_timer = 0;
 
 // --- Morte ---
-death_screen_delay = 45;     // Frames entre morrer e a tela de morte começar
+death_screen_delay = 60;     // Frames entre morrer e a tela de morte começar (dura a queda)
 death_timer = 0;
 
 // --- Ataque ---
@@ -414,6 +414,10 @@ check_death = function()
     state = PlayerState.DEAD;
     death_timer = death_screen_delay;
     cancel_sword();
+
+    sprite_index = spr_death_player;
+    image_index = 0;
+    image_speed = 0; // A animação acompanha o tempo (ver update_dead_state)
 }
 
 // Espera um instante e abre a tela de morte. O jogador só renasce quando
@@ -425,6 +429,11 @@ update_dead_state = function()
     apply_collisions();
 
     death_timer -= 1;
+
+    // A queda acompanha o tempo e o último frame fica parado no chão
+    var _progress = clamp(1 - death_timer / death_screen_delay, 0, 1);
+    image_index = min(_progress * image_number, image_number - 0.01);
+
     if (death_timer == 0)
     {
         show_death_screen();
