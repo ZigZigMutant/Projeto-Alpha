@@ -40,7 +40,7 @@ hurt_duration = 15;          // Frames sem controle após o dano
 hurt_timer = 0;
 
 // --- Morte ---
-death_restart_delay = 60;    // Frames entre morrer e reiniciar a sala
+death_screen_delay = 45;     // Frames entre morrer e a tela de morte começar
 death_timer = 0;
 
 // --- Ataque ---
@@ -412,11 +412,12 @@ check_death = function()
     if (hp > 0 || state == PlayerState.DEAD) return;
 
     state = PlayerState.DEAD;
-    death_timer = death_restart_delay;
+    death_timer = death_screen_delay;
     cancel_sword();
 }
 
-// Espera um instante e reinicia a sala (futuramente: tela de game over)
+// Espera um instante e abre a tela de morte. O jogador só renasce quando
+// aperta R nela (a própria tela chama respawn()).
 update_dead_state = function()
 {
     hspd = 0;
@@ -424,10 +425,16 @@ update_dead_state = function()
     apply_collisions();
 
     death_timer -= 1;
-    if (death_timer <= 0)
+    if (death_timer == 0)
     {
-        respawn();
+        show_death_screen();
     }
+}
+
+show_death_screen = function()
+{
+    var _screen = instance_create_depth(0, 0, -10000, obj_death_screen);
+    _screen.owner = id;
 }
 
 
@@ -560,7 +567,8 @@ set_checkpoint = function(_altar)
     global.checkpoint = { room_id: room, x: _altar.respawn_x, y: _altar.respawn_y };
 }
 
-// Ao morrer: volta ao último altar. Sem altar ainda, só reinicia a sala.
+// Chamada pela tela de morte: volta ao último altar usado ou, se ainda não
+// encontrou nenhum, ao começo da fase.
 respawn = function()
 {
     if (global.checkpoint != undefined)
@@ -570,7 +578,7 @@ respawn = function()
     }
     else
     {
-        room_restart();
+        room_goto(LEVEL_START_ROOM);
     }
 }
 

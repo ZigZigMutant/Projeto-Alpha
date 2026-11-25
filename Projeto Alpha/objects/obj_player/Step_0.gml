@@ -51,7 +51,7 @@ handle_contact_damage();
 check_death();
 
 // --- ATALHO DE DEBUG: só existe ao rodar pela IDE, não no executável final ---
-if (GM_build_type == "run" && keyboard_check_pressed(ord("R")))
+if (GM_build_type == "run" && state != PlayerState.DEAD && keyboard_check_pressed(ord("R")))
 {
     room_restart();
 }

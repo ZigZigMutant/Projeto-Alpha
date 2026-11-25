@@ -17,6 +17,7 @@ function input_get()
         dash_pressed:  keyboard_check_pressed(vk_shift),
         heal_pressed:  keyboard_check_pressed(ord("L")),
         interact_pressed: keyboard_check_pressed(ord("E")),
+		respawn_pressed: keyboard_check_pressed(ord("R")),
 		
 		 // Controles dos menus
         menu_up_pressed:  keyboard_check_pressed(vk_up),
