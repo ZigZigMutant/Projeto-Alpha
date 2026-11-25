@@ -30,6 +30,55 @@ for (var i = 0; i < obj_player.potion_max; i++)
     var _sprite = (i < obj_player.potion_charges) ? spr_flask_full : spr_flask_empty;
     draw_sprite(_sprite, 0, flask_x + i * flask_spacing, flask_y);
 }
+
+// ============================================================
+// obj_hud | DRAW  (cole ANTES do draw_set_color(c_white) final)
+// ============================================================
+// Usa flask_x, flask_y e flask_spacing, definidos para as poções:
+// a barra fica à direita dos frascos.
+
+var _player = obj_player;
+var _mx = flask_x + _player.potion_max * flask_spacing + 4;
+var _my = flask_y + 5;
+var _mana_w = floor(mana_bar_w * clamp(_player.mana / _player.mana_max, 0, 1));
+
+// Cor da barra: pisca em vermelho se faltou mana, brilha ao ganhar mana
+var _fill = make_color_rgb(54, 112, 214);
+var _shine = make_color_rgb(128, 184, 255);
+if (_player.mana_flash_timer > 0 && (_player.mana_flash_timer div 3) mod 2 == 0)
+{
+    _fill = make_color_rgb(190, 50, 56);
+    _shine = make_color_rgb(235, 110, 110);
+}
+else if (_player.mana_gain_timer > 0)
+{
+    _fill = make_color_rgb(110, 170, 250);
+    _shine = make_color_rgb(210, 235, 255);
+}
+
+// Contorno e fundo
+draw_set_color(make_color_rgb(14, 9, 12));
+draw_rectangle(_mx - 1, _my - 1, _mx + mana_bar_w, _my + mana_bar_h, false);
+draw_set_color(make_color_rgb(10, 16, 34));
+draw_rectangle(_mx, _my, _mx + mana_bar_w - 1, _my + mana_bar_h - 1, false);
+
+// Preenchimento com faixa de brilho no topo
+if (_mana_w > 0)
+{
+    draw_set_color(_fill);
+    draw_rectangle(_mx, _my, _mx + _mana_w - 1, _my + mana_bar_h - 1, false);
+    draw_set_color(_shine);
+    draw_rectangle(_mx, _my, _mx + _mana_w - 1, _my, false);
+}
+
+// Marcas: cada divisão equivale a um tiro
+draw_set_color(make_color_rgb(14, 9, 12));
+for (var i = 1; i < _player.mana_max / _player.shoot_cost; i++)
+{
+    var _tx = _mx + floor(mana_bar_w * i * _player.shoot_cost / _player.mana_max);
+    draw_line(_tx, _my, _tx, _my + mana_bar_h - 1);
+}
+
 // Volta ao padrão para não afetar outros desenhos
 
 draw_set_color(c_white);

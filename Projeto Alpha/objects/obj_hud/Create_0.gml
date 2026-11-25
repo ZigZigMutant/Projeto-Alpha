@@ -14,3 +14,9 @@ fill_height = 8;
 flask_x = 8;        // Posição do primeiro frasco
 flask_y = 26;       // Abaixo da moldura da vida (ajuste olhando a tela)
 flask_spacing = 14;
+
+// ============================================================
+// obj_hud | CREATE  (acrescente ao final do Create existente)
+// ============================================================
+mana_bar_w = 60;   // Largura da barra de mana
+mana_bar_h = 6;    // Altura da barra de mana
