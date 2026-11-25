@@ -8,16 +8,17 @@
 function input_get()
 {
     return {
-        move_x:           keyboard_check(ord("D")) - keyboard_check(ord("A")),
-        up:               keyboard_check(ord("W")),
-        down:             keyboard_check(ord("S")),
-        jump_pressed:     keyboard_check_pressed(vk_space),
-        melee_pressed:    keyboard_check_pressed(ord("K")),
-        shoot_pressed:    keyboard_check_pressed(ord("J")),
-        dash_pressed:     keyboard_check_pressed(vk_shift),
-        heal_pressed:     keyboard_check_pressed(ord("L")),
-
-        // Controles dos menus
+        move_x:        keyboard_check(ord("D")) - keyboard_check(ord("A")),
+        up:            keyboard_check(ord("W")),
+        down:          keyboard_check(ord("S")),
+        jump_pressed:  keyboard_check_pressed(vk_space),
+        melee_pressed: keyboard_check_pressed(ord("K")),
+        shoot_pressed: keyboard_check_pressed(ord("J")),
+        dash_pressed:  keyboard_check_pressed(vk_shift),
+        heal_pressed:  keyboard_check_pressed(ord("L")),
+        interact_pressed: keyboard_check_pressed(ord("E")),
+		
+		 // Controles dos menus
         menu_up_pressed:  keyboard_check_pressed(vk_up),
         menu_down_pressed:keyboard_check_pressed(vk_down),
         confirm_pressed:  keyboard_check_pressed(vk_enter),

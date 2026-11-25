@@ -5,6 +5,14 @@
 // --- Entrada (atualizada todo frame no Step) ---
 input = input_get();
 
+// --- Renascimento: se acabou de morrer, nasce no último altar ---
+if (global.respawning && global.checkpoint != undefined)
+{
+    x = global.checkpoint.x;
+    y = global.checkpoint.y;
+    global.respawning = false;
+}
+
 // --- Estado atual ---
 state = PlayerState.FREE;
 
@@ -54,6 +62,20 @@ potion_charges = potion_max; // Cargas atuais
 potion_heal_amount = 40;     // Vida recuperada por carga
 potion_drink_duration = 50;  // Frames bebendo (levar dano cancela e a carga se perde)
 potion_timer = 0;
+
+// --- Mana ---
+mana_max = 50;
+mana = mana_max;
+shoot_cost = 10;             // Custo de cada tiro
+mana_gain_on_hit = 6;        // Mana ganha a cada golpe de espada que acerta
+mana_flash_timer = 0;        // Faz a barra piscar em vermelho quando falta mana (HUD)
+mana_gain_timer = 0;         // Faz a barra brilhar ao ganhar mana (HUD)
+
+// --- Meditação no altar ---
+meditate_duration = 140;     // Frames: reverência, bênção (no meio) e levantar
+meditate_timer = 0;
+meditate_restored = false;   // A bênção acontece uma vez só por meditação
+meditate_altar = noone;
 
 // --- Dash ---
 dash_speed = 8;              // Pixels por frame (8 x 10 = 80 pixels de distância)
@@ -210,6 +232,7 @@ start_melee_attack = function()
 start_shoot_attack = function()
 {
     start_attack(spr_shoot_player);
+    spend_mana(shoot_cost);
 
     var _bullet = instance_create_layer(x + shoot_offset_x * image_xscale, y, layer, obj_projetil);
     _bullet.way = image_xscale;
@@ -228,6 +251,8 @@ cancel_sword = function()
 // Chamada pela espada quando ela acerta um inimigo
 on_sword_hit = function(_attack_dir)
 {
+    gain_mana(mana_gain_on_hit);
+
     // Pogo: o golpe para baixo faz o jogador quicar
     if (_attack_dir == AttackDirection.DOWN)
     {
@@ -243,7 +268,14 @@ handle_attack_input = function()
     }
     else if (input.shoot_pressed)
     {
-        start_shoot_attack();
+        if (can_afford_mana(shoot_cost))
+        {
+            start_shoot_attack();
+        }
+        else
+        {
+            deny_not_enough_mana();
+        }
     }
 }
 
@@ -329,7 +361,7 @@ handle_contact_damage = function()
 // Aplica dano, empurrão e invencibilidade temporária
 take_damage = function(_amount, _source_x)
 {
-    if (invulnerable || state == PlayerState.DEAD) return;
+    if (invulnerable || state == PlayerState.DEAD || state == PlayerState.MEDITATE) return;
 
     hp = max(hp - _amount, 0);
     invulnerable = true;
@@ -394,7 +426,7 @@ update_dead_state = function()
     death_timer -= 1;
     if (death_timer <= 0)
     {
-        room_restart();
+        respawn();
     }
 }
 
@@ -458,14 +490,154 @@ finish_drinking = function()
     state = PlayerState.FREE;
     image_speed = 1;
 
-    var _effect = instance_create_depth(x, y, depth - 1, obj_heal_effect);
-    _effect.owner = id;
+    spawn_heal_effect();
 }
 
 // Chamada pelo altar ao meditar
 restore_potions = function()
 {
     potion_charges = potion_max;
+}
+
+
+// ============================================================
+// MANA
+// ============================================================
+
+can_afford_mana = function(_cost)
+{
+    return mana >= _cost;
+}
+
+spend_mana = function(_amount)
+{
+    mana = max(mana - _amount, 0);
+}
+
+// Mana ganha em combate (golpes de espada que acertam)
+gain_mana = function(_amount)
+{
+    var _before = mana;
+    mana = min(mana + _amount, mana_max);
+    if (mana > _before) mana_gain_timer = 12;
+}
+
+restore_mana = function()
+{
+    mana = mana_max;
+    mana_gain_timer = 30;
+}
+
+// Tentou gastar mana sem ter o bastante: a barra pisca em vermelho
+deny_not_enough_mana = function()
+{
+    mana_flash_timer = 24;
+}
+
+// Faz os efeitos visuais da barra de mana durarem pouco tempo
+update_mana_feedback = function()
+{
+    if (mana_flash_timer > 0) mana_flash_timer -= 1;
+    if (mana_gain_timer > 0) mana_gain_timer -= 1;
+}
+
+
+// ============================================================
+// ALTAR: RESTAURAÇÃO, CHECKPOINT E MEDITAÇÃO
+// ============================================================
+
+// Vida, mana e poções de uma vez (usada no altar)
+restore_all = function()
+{
+    hp = hp_max;
+    restore_mana();
+    restore_potions();
+}
+
+// Guarda o altar como ponto de renascimento
+set_checkpoint = function(_altar)
+{
+    global.checkpoint = { room_id: room, x: _altar.respawn_x, y: _altar.respawn_y };
+}
+
+// Ao morrer: volta ao último altar. Sem altar ainda, só reinicia a sala.
+respawn = function()
+{
+    if (global.checkpoint != undefined)
+    {
+        global.respawning = true;
+        room_goto(global.checkpoint.room_id);
+    }
+    else
+    {
+        room_restart();
+    }
+}
+
+spawn_heal_effect = function()
+{
+    var _effect = instance_create_depth(x, y, depth - 1, obj_heal_effect);
+    _effect.owner = id;
+}
+
+handle_interact_input = function()
+{
+    if (!input.interact_pressed || !is_on_ground()) return;
+
+    var _altar = instance_place(x, y, obj_altar);
+    if (_altar != noone)
+    {
+        start_meditating(_altar);
+    }
+}
+
+start_meditating = function(_altar)
+{
+    state = PlayerState.MEDITATE;
+    meditate_altar = _altar;
+    meditate_timer = meditate_duration;
+    meditate_restored = false;
+    hspd = 0;
+
+    // Vira de frente para o altar
+    var _direction = sign(_altar.x - x);
+    if (_direction != 0) image_xscale = _direction;
+
+    sprite_index = spr_meditate_player;
+    image_index = 0;
+    image_speed = 0; // A animação acompanha o tempo (ver update_meditate_state)
+}
+
+// Imóvel e imune a dano. No auge da reverência (metade do tempo), o altar abençoa.
+update_meditate_state = function()
+{
+    hspd = 0;
+    apply_gravity();
+    apply_collisions();
+
+    meditate_timer -= 1;
+    var _progress = 1 - meditate_timer / meditate_duration;
+    image_index = min(_progress * image_number, image_number - 0.01);
+
+    if (!meditate_restored && _progress >= 0.5)
+    {
+        meditate_restored = true;
+        bless_at_altar();
+    }
+
+    if (meditate_timer <= 0)
+    {
+        state = PlayerState.FREE;
+        image_speed = 1;
+    }
+}
+
+bless_at_altar = function()
+{
+    restore_all();
+    set_checkpoint(meditate_altar);
+    meditate_altar.activate();
+    spawn_heal_effect();
 }
 
 

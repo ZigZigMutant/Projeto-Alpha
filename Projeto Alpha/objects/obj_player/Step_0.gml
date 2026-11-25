@@ -12,6 +12,7 @@ switch (state)
         handle_dash_input();
 
         // Cada ação só roda se o estado continuou livre
+        if (state == PlayerState.FREE) handle_interact_input();
         if (state == PlayerState.FREE) handle_potion_input();
         if (state == PlayerState.FREE) handle_attack_input();
         if (state == PlayerState.FREE) update_free_animation();
@@ -34,12 +35,17 @@ switch (state)
         update_heal_state();
         break;
 
+    case PlayerState.MEDITATE:
+        update_meditate_state();
+        break;
+
     case PlayerState.DEAD:
         update_dead_state();
         break;
 }
 
 update_dash_cooldown();
+update_mana_feedback();
 update_invulnerability();
 handle_contact_damage();
 check_death();
@@ -50,8 +56,9 @@ if (GM_build_type == "run" && keyboard_check_pressed(ord("R")))
     room_restart();
 }
 
-// Debug: recarrega as poções enquanto o altar não existe (P)
+// Debug: recarrega poções e mana sem precisar do altar (P)
 if (GM_build_type == "run" && keyboard_check_pressed(ord("P")))
 {
     restore_potions();
+    restore_mana();
 }

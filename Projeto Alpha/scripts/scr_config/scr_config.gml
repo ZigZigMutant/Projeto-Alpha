@@ -11,7 +11,7 @@
 // IMPORTANTE: vocês já têm esses enums em algum script.
 // NÃO duplique. Apenas adicione HURT e DEAD ao PlayerState existente:
 //
-// enum PlayerState { FREE, ATTACKING, DASH, HURT, DEAD, HEAL }
+// enum PlayerState { FREE, ATTACKING, DASH, HURT, DEAD, HEAL, MEDITATE }
 // enum AttackDirection { FORWARD, UP, DOWN }
 
 // Este é novo, pode ficar aqui mesmo:
