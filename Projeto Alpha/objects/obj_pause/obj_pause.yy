@@ -10,8 +10,8 @@
   "name":"obj_pause",
   "overriddenProperties":[],
   "parent":{
-    "name":"Objects",
-    "path":"folders/Objects.yy",
+    "name":"Mecanicas",
+    "path":"folders/Objects/Mecanicas.yy",
   },
   "parentObjectId":null,
   "persistent":false,

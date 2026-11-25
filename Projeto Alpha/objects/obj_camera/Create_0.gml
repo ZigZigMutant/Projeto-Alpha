@@ -1,15 +1,31 @@
-cam = view_camera[0];
-cam_w = camera_get_view_width(cam);
-cam_h = camera_get_view_height(cam);
+// Criar câmera
+cam = camera_create();
 
-follow_speed = 0.1;   // 0 = não se move, 1 = cola no jogador
-offset_y = -130;       // Mira no corpo do jogador (a origem dele fica nos pés)
+// Resolução da câmera
+view_w = 500;
+view_h = 285;
+// Altura fixa da câmera
 
-cam_x = 0;
-cam_y = 0;
-snapped = false;      // Na primeira vez, pula direto para o jogador
-// Limites da câmera nesta sala (sobrescreva na Creation Code da instância)
-bound_left = 0;
-bound_top = 0;
-bound_right = room_width;
-bound_bottom = room_height;
+
+camera_fixed_y = 0;
+
+camera_set_view_size(cam, view_w, view_h);
+
+// Ativar viewport
+view_enabled = true;
+view_visible[0] = true;
+view_camera[0] = cam;
+
+// Velocidade de acompanhamento
+camera_speed = 0.10;
+
+// Configuração padrão
+if (!variable_global_exists("camera_vertical"))
+{
+    global.camera_vertical = false;
+}
+
+// Zona morta vertical
+dead_zone_top = 140;
+dead_zone_bottom = 260
+;

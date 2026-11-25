@@ -10,8 +10,8 @@
   "name":"obj_death_screen",
   "overriddenProperties":[],
   "parent":{
-    "name":"Objects",
-    "path":"folders/Objects.yy",
+    "name":"Mecanicas",
+    "path":"folders/Objects/Mecanicas.yy",
   },
   "parentObjectId":null,
   "persistent":false,

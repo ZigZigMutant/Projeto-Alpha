@@ -1,0 +1,1 @@
+global.camera_vertical = true;
