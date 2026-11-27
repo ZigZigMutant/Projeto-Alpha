@@ -41,6 +41,7 @@ knockback_friction = 0.85;   // Quanto do empurrão sobra a cada frame
 hurt_lift = -2;              // Pequeno salto ao ser atingido
 hurt_duration = 15;          // Frames sem controle após o dano
 hurt_timer = 0;
+has_hit = false;
 
 // --- Morte ---
 death_screen_delay = 60;     // Frames entre morrer e a tela de morte começar (dura a queda)
@@ -57,7 +58,12 @@ sword_up_x = 0;
 sword_up_y = -36;
 sword_down_x = 0;
 sword_down_y = 22;
-pogo_speed = -9;             // Impulso ao acertar um inimigo com o golpe para baixo
+
+// --- Pogo ---
+pogo_speed = -9;
+pogo_active = false;
+pogo_contact_timer = 0;
+pogo_contact_duration = 12;
 
 // --- Poção de cura ---
 potion_max = 2;              // Cargas máximas
@@ -115,12 +121,14 @@ handle_jump = function()
     {
         vspd = jumpspd;
     }
-	
-	if (vspd < 0 && !input.jump_held)
+
+    // Não reduz a velocidade durante o impulso do pogo
+    if (vspd < 0 && !input.jump_held && !pogo_active)
     {
         vspd = max(vspd, jumpspd / 3);
     }
 }
+
 
 apply_gravity = function()
 {
@@ -131,6 +139,7 @@ apply_gravity = function()
 }
 
 // Move o jogador por hspd e vspd, parando nas paredes e no chão
+
 apply_collisions = function()
 {
     // Horizontal
@@ -140,31 +149,42 @@ apply_collisions = function()
         {
             x += sign(hspd);
         }
+
         hspd = 0;
     }
+
     x += hspd;
 
     // Vertical
-	
-	if (vspd < 0) {
-    vspd += grav;        // subindo
-} else {
-    vspd += grav_fall;   // caindo
-}
+    if (vspd < 0)
+    {
+        vspd += grav;
+    }
+    else
+    {
+        vspd += grav_fall;
+    }
 
-vspd = min(vspd, max_fall);
-	
+    vspd = min(vspd, max_fall);
+
     if (place_meeting(x, y + vspd, COLLISION_OBJECT))
     {
         while (!place_meeting(x, y + sign(vspd), COLLISION_OBJECT))
         {
             y += sign(vspd);
         }
+
         vspd = 0;
     }
-    y += vspd;
-}
 
+    y += vspd;
+
+    // Encerra o pogo quando o jogador começa a descer
+    if (pogo_active && vspd >= 0)
+    {
+        pogo_active = false;
+    }
+}
 
 // ============================================================
 // ANIMAÇÃO
@@ -211,17 +231,22 @@ get_attack_direction = function()
 }
 
 // Cria a hitbox da espada, posicionada conforme a direção
+
 create_sword = function(_direction)
 {
     var _sword = instance_create_layer(x, y, layer, obj_sword);
     _sword.owner = id;
     _sword.attack_dir = _direction;
 
+    // Aumenta o tamanho de todas as espadas em 25%
+    _sword.image_xscale = 1.25;
+    _sword.image_yscale = 1.25;
+
     switch (_direction)
     {
         case AttackDirection.FORWARD:
             _sword.offset_x = sword_forward_x * image_xscale;
-            _sword.image_xscale = image_xscale;
+            _sword.image_xscale *= image_xscale;
             break;
 
         case AttackDirection.UP:
@@ -236,14 +261,28 @@ create_sword = function(_direction)
             _sword.offset_y = sword_down_y;
             break;
     }
+	// A espada do objeto só aparece nos ataques direcionais
+_sword.visible = (_direction != AttackDirection.FORWARD);
 
     return _sword;
 }
 
 start_melee_attack = function()
 {
-    start_attack(spr_attack_player); // Provisório: ainda não existe animação para cima/baixo
-    active_sword = create_sword(get_attack_direction());
+    var _direction = get_attack_direction();
+
+    // Ataque horizontal mantém a animação com espada
+    if (_direction == AttackDirection.FORWARD)
+    {
+        start_attack(spr_attack_player);
+    }
+    else
+    {
+        // Ataques verticais usam o personagem sem a espada antiga
+        start_attack(spr_player);
+    }
+
+    active_sword = create_sword(_direction);
 }
 
 start_shoot_attack = function()
@@ -266,14 +305,22 @@ cancel_sword = function()
 }
 
 // Chamada pela espada quando ela acerta um inimigo
+// Chamada pela espada quando ela acerta um inimigo
 on_sword_hit = function(_attack_dir)
 {
     gain_mana(mana_gain_on_hit);
 
-    // Pogo: o golpe para baixo faz o jogador quicar
+    // Pogo: impulso vertical ao acertar um inimigo
     if (_attack_dir == AttackDirection.DOWN)
     {
         vspd = pogo_speed;
+        pogo_active = true;
+
+        // Evita empurrão horizontal no momento do pogo
+        knockback_x = 0;
+
+        // Proteção temporária contra contato
+        pogo_contact_timer = pogo_contact_duration;
     }
 }
 
@@ -366,6 +413,9 @@ update_dash_cooldown = function()
 // Dano por contato com inimigo
 handle_contact_damage = function()
 {
+    // Proteção temporária após executar um pogo
+    if (pogo_contact_timer > 0) return;
+
     var _enemy = instance_place(x, y, obj_enemy_parent);
 
     // Só causa dano se existir um inimigo e ele puder ferir o jogador

@@ -1,6 +1,7 @@
-// ============================================================
-// obj_player | Step
-// ============================================================
+
+ // ============================================================
+ // obj_player | Step
+ // ============================================================
 
 input = input_get();
 
@@ -44,21 +45,38 @@ switch (state)
         break;
 }
 
+// Atualizações gerais
 update_dash_cooldown();
 update_mana_feedback();
 update_invulnerability();
 handle_contact_damage();
 check_death();
 
-// --- ATALHO DE DEBUG: só existe ao rodar pela IDE, não no executável final ---
+// Atualiza o tempo de proteção após o pogo
+if (pogo_contact_timer > 0)
+{
+    pogo_contact_timer -= 1;
+}
+
+// ============================================================
+// ATALHOS DE DEBUG
+// ============================================================
+
+// R: reinicia a sala
 if (GM_build_type == "run" && state != PlayerState.DEAD && keyboard_check_pressed(ord("R")))
 {
     room_restart();
 }
 
-// Debug: recarrega poções e mana sem precisar do altar (P)
+// P: restaura poções e mana
 if (GM_build_type == "run" && keyboard_check_pressed(ord("P")))
 {
     restore_potions();
     restore_mana();
+}
+
+// B: vai diretamente para a sala do chefe
+if (GM_build_type == "run" && keyboard_check_pressed(ord("B")))
+{
+    room_goto(RoomBoss);
 }
