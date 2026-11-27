@@ -12,6 +12,7 @@ function input_get()
         up:            keyboard_check(ord("W")),
         down:          keyboard_check(ord("S")),
         jump_pressed:  keyboard_check_pressed(vk_space),
+		jump_held:     keyboard_check(vk_space),
         melee_pressed: keyboard_check_pressed(ord("K")),
         shoot_pressed: keyboard_check_pressed(ord("J")),
         dash_pressed:  keyboard_check_pressed(vk_shift),

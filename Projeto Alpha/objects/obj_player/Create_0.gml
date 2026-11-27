@@ -25,8 +25,11 @@ move = 0;
 hspd = 0;
 vspd = 0;
 spd = 3;
-grav = 0.75;
+grav = 0.65;
 jumpspd = -12;
+
+grav_fall = 0.35;   // gravidade na queda (menor = cai mais devagar)
+max_fall = 8;       // velocidade máxima de queda
 
 // --- Dano ---
 invulnerable = false;
@@ -112,13 +115,18 @@ handle_jump = function()
     {
         vspd = jumpspd;
     }
+	
+	if (vspd < 0 && !input.jump_held)
+    {
+        vspd = max(vspd, jumpspd / 3);
+    }
 }
 
 apply_gravity = function()
 {
     if (!is_on_ground())
     {
-        vspd += grav;
+
     }
 }
 
@@ -137,6 +145,15 @@ apply_collisions = function()
     x += hspd;
 
     // Vertical
+	
+	if (vspd < 0) {
+    vspd += grav;        // subindo
+} else {
+    vspd += grav_fall;   // caindo
+}
+
+vspd = min(vspd, max_fall);
+	
     if (place_meeting(x, y + vspd, COLLISION_OBJECT))
     {
         while (!place_meeting(x, y + sign(vspd), COLLISION_OBJECT))
